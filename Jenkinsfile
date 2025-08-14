@@ -12,13 +12,9 @@ pipeline {
         stage('Load and Run Scripts') {
             steps {
                 script {
-                    def buildScript  = load 'build.groovy'
                     def deployScript = load 'deploy.groovy'
-                    def utilsScript  = load 'utils.groovy'
 
-                    buildScript.runBuild()
                     deployScript.runDeploy()
-                    utilsScript.runUtils()
                 }
             }
         }
