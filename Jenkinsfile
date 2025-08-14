@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the repo containing Jenkinsfile and Groovy scripts
+                // Checkout the same repo where Jenkinsfile & groovies are stored
                 checkout scm
             }
         }
@@ -12,16 +12,13 @@ pipeline {
         stage('Load and Run Scripts') {
             steps {
                 script {
-                    // Define default script for this repo
-                    def DEFAULT_PIPELINE = 'build.groovy'
-
-                    // Load dispatcher.groovy and pass default
-                    def dispatcher = load('dispatcher.groovy')
-                    dispatcher.runPipeline(DEFAULT_PIPELINE)
-
-                    // Optionally, if you still want to call deploy.groovy separately
+                    def buildScript = load 'build.groovy'
                     def deployScript = load 'deploy.groovy'
+                    def utilsScript  = load 'utils.groovy'
+
+                    buildScript.runBuild()
                     deployScript.runDeploy()
+                    utilsScript.runUtils()
                 }
             }
         }
