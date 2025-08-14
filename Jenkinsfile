@@ -1,15 +1,15 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'SCRIPT_NAME', defaultValue: 'build.groovy', description: 'Groovy file in RTS to run')
+        choice(name: 'SCRIPT_NAME', choices: ['build.groovy', 'deploy.groovy'], description: 'Select RTS pipeline script')
     }
     stages {
         stage('Run RTS Pipeline') {
             steps {
                 script {
-                    // Load the chosen Groovy file from RTS workspace
-                    def rtsPipeline = load(SCRIPT_NAME)
-                    rtsPipeline.run()
+                    // Load the script from RTS repo
+                    def rtsScript = load(SCRIPT_NAME)
+                    rtsScript.run()
                 }
             }
         }
