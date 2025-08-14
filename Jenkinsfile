@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the same repo where Jenkinsfile & groovies are stored
+                // This checks out the repo containing Jenkinsfile and Groovy scripts
                 checkout scm
             }
         }
@@ -12,7 +12,7 @@ pipeline {
         stage('Load and Run Scripts') {
             steps {
                 script {
-                    def buildScript = load 'build.groovy'
+                    def buildScript  = load 'build.groovy'
                     def deployScript = load 'deploy.groovy'
                     def utilsScript  = load 'utils.groovy'
 
