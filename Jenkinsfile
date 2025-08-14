@@ -9,14 +9,14 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/YourOrg/rts.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/Arbaz6400/rts.git']]
                 ])
             }
         }
         stage('Run RTS Script') {
             steps {
                 script {
-                    def scriptRunner = load("${params.SCRIPT_NAME}")
+                    def scriptRunner = load("${params.build.groovy}")
                     scriptRunner.run()
                 }
             }
