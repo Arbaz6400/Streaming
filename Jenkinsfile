@@ -1,20 +1,24 @@
 pipeline {
     agent any
-    parameters {
-        choice(
-            name: 'PIPELINE_NAME',
-            choices: ['build.groovy', 'deploy.groovy'],
-            description: 'Select which RTS pipeline to run'
-        )
-    }
+
     stages {
-        stage('Run RTS Pipeline') {
+        stage('Checkout') {
+            steps {
+                // Checkout the same repo where Jenkinsfile & groovies are stored
+                checkout scm
+            }
+        }
+
+        stage('Load and Run Scripts') {
             steps {
                 script {
-                    // Remote Jenkinsfile Provider fetches RTS repo into @script dir
-                    def scriptPath = "${env.WORKSPACE}@script/${params.PIPELINE_NAME}"
-                    echo "Loading RTS pipeline: ${scriptPath}"
-                    load(scriptPath)
+                    def buildScript = load 'build.groovy'
+                    def deployScript = load 'deploy.groovy'
+                    def utilsScript  = load 'utils.groovy'
+
+                    buildScript.runBuild()
+                    deployScript.runDeploy()
+                    utilsScript.runUtils()
                 }
             }
         }
