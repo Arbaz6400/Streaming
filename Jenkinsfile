@@ -1,11 +1,17 @@
 node {
-    def pipelineName = params.PIPELINE_NAME ?: 'build.groovy'
-    
+    // Clean workspace
+    deleteDir()
+
+    // Checkout RTS repo into current workspace
     checkout([
         $class: 'GitSCM',
-        branches: [[name: '*/main']],
+        branches: [[name: '*/main']],  // change if your RTS repo branch is different
         userRemoteConfigs: [[url: 'https://github.com/Arbaz6400/rts.git']]
     ])
 
-    load("pipelines/${pipelineName}")
+    // Verify files (for debugging)
+    sh 'ls -R'
+
+    // Load and run your pipeline from RTS repo
+    load('build.groovy') // Change to your actual groovy file path
 }
