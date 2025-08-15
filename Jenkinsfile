@@ -13,5 +13,5 @@ node {
     sh 'ls -R'
 
     // Load and run your pipeline from RTS repo
-    load('deploy.groovy') // Change to your actual groovy file path
+    load('test.groovy') // Change to your actual groovy file path
 }
