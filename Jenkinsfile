@@ -12,6 +12,7 @@ node {
     // Verify files (for debugging)
     sh 'ls -R'
 
-    // Load and run your pipeline from RTS repo
-    load('test.groovy') // Change to your actual groovy file path
+    // UTF-8 safe load
+    def groovyCode = readFile(file: 'test.groovy', encoding: 'UTF-8')
+    evaluate(groovyCode)
 }
