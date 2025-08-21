@@ -1,6 +1,8 @@
 @Library('quality-lib') _
 
-
-Sonar(
-      // Jenkins credentials ID
-)
+Sonar([
+    repoName    : 'Streaming',
+    branchName  : 'main',
+    sonarUrl    : 'http://localhost:9000',
+    credentialId: 'sonar-token-id'
+])
