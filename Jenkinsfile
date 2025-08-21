@@ -1,4 +1,7 @@
 @Library('quality-lib') _
 
 
-Sonar("my-service-repo")
+Sonar(
+    repoName: "your-repo-name",
+    sonarUrl: "http://localhost:9000",
+    credentialId: "sonar-token-id"
