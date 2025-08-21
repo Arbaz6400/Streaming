@@ -2,6 +2,7 @@
 
 
 Sonar(
-    repoName: "your-repo-name",
-    sonarUrl: "http://localhost:9000",
-    credentialId: "sonar-token-id"
+    repoName: "Streaming",             // your repo name
+    sonarUrl: "http://localhost:9000", // your SonarQube URL
+    credentialId: "sonar-token-id"     // Jenkins credentials ID
+)
