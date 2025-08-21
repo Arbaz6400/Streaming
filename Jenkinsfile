@@ -1,2 +1,19 @@
 @Library('quality-lib') _
-SonarPipeline()
+
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Sonar + QualityGate') {
+            steps {
+                // Call your pipeline from the library
+                Sonar-Pipeline(
+                    token: credentials('sonar-token-id'), // Jenkins Credentials
+                    project: 'my-app',                    // projectKey in SonarQube
+                    branch: 'main'                        // branch name
+                )
+            }
+        }
+    }
+}
