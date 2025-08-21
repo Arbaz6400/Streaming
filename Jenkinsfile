@@ -1,4 +1,4 @@
 @Library('quality-lib') _
 
 
-Sonar("my-service-repo", "main")
+Sonar("my-service-repo")
