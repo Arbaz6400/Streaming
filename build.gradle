@@ -1,14 +1,21 @@
-plugins {
-    id 'java'
-}
+version = project.hasProperty('version') ? project.property('version') : '0.0.1'
 
-group = 'com.streaming'
-version = '1.0.0'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'junit:junit:4.13.2'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "nexus"
+            url = version.endsWith("SNAPSHOT") ?
+                uri("http://localhost:8081/repository/maven-snapshots/") :
+                uri("http://localhost:8081/repository/maven-releases/")
+            credentials {
+                username = project.hasProperty("nexusUsername") ? project.property("nexusUsername") : ""
+                password = project.hasProperty("nexusPassword") ? project.property("nexusPassword") : ""
+            }
+        }
+    }
 }
