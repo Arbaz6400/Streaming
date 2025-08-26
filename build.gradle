@@ -1,20 +1,30 @@
-version = project.hasProperty('version') ? project.property('version') : '0.0.1'
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+// Hard-coded version
+version = '1.0.0'
+
+group = 'org.enbd'
+archivesBaseName = 'streaming-app'
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            groupId = 'org.enbd'
+            artifactId = 'streaming-app'
+            version = project.version  // uses the hard-coded version above
         }
     }
     repositories {
         maven {
-            name = "nexus"
-            url = version.endsWith("SNAPSHOT") ?
-                uri("http://localhost:8081/repository/maven-snapshots/") :
-                uri("http://localhost:8081/repository/maven-releases/")
+            name = "maven"
+            url = uri("http://localhost:8081/repository/maven-releases/")
             credentials {
-                username = project.hasProperty("nexusUsername") ? project.property("nexusUsername") : ""
-                password = project.hasProperty("nexusPassword") ? project.property("nexusPassword") : ""
+                username = 'admin'        // replace with your Nexus user
+                password = 'admin123'     // replace with your Nexus password
             }
         }
     }
