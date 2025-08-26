@@ -1,14 +1,15 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group = 'com.streaming'
+group = 'com.example'
 version = '1.0.0'
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'junit:junit:4.13.2'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
