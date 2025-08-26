@@ -1,3 +1,3 @@
 @Library('quality-lib') _
 
-myPipeline()
+streamingPipeline('pom.xml', 'prod-repo')
