@@ -2,4 +2,4 @@
 
 // streamingPipeline('pom.xml', 'prod-repo')
 
-myPipeline()
+test()  
