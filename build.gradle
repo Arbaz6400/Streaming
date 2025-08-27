@@ -1,49 +1,54 @@
 plugins {
     id 'java'
+    id 'application'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2' // or compatible version
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
+group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
+version = '1.0.0'
 
+repositories {
+    mavenCentral()
+}
 
+dependencies {
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    mainClass = 'com.enbd.streaming.Main' // Optional, can be placeholder if no main class
+}
+
+// Shadow JAR configuration
+shadowJar {
+    archiveBaseName.set('streaming')
+    archiveClassifier.set('')
+    archiveVersion.set(version)
+    mergeServiceFiles()
+    zip64 true
+}
+
+// Task to prepare artifacts (Shadow JAR + POM)
+tasks.register('prepareArtifacts') {
+    dependsOn shadowJar
+    dependsOn publishToMavenLocal
+    doLast {
+        println "Artifacts prepared:"
+        println "JAR: ${tasks.shadowJar.get().archiveFile.get().asFile}"
+        println "POM: build/publications/mavenJava/pom-default.xml"
+    }
+}
+
+// Maven publication
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-
-            pom {
-                name = 'Streaming Project'
-                description = 'Streaming project for Nexus upload'
-                url = 'https://example.com/streaming'
-
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'arbaz'
-                        name = 'Arbaz Shaikh'
-                        email = 'arbaz@example.com'
-                    }
-                }
-
-                scm {
-                    connection = 'scm:git:git@example.com:streaming.git'
-                    developerConnection = 'scm:git:ssh://git@example.com:streaming.git'
-                    url = 'https://example.com/streaming'
-                }
-            }
         }
     }
-
     repositories {
-        maven {
-            name = 'local'
-            url = uri("${buildDir}/repo")
-        }
+        mavenLocal()
     }
 }
