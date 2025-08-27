@@ -1,9 +1,41 @@
-repositories {
-    mavenLocal()
-    mavenCentral()
-    // Your Nexus repo if needed
-}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
-dependencies {
-    implementation 'org.enbd.common:rts:1.0.0'
+            pom {
+                name = 'Streaming Project'
+                description = 'Streaming project for Nexus upload'
+                url = 'https://example.com/streaming'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'arbaz'
+                        name = 'Arbaz Shaikh'
+                        email = 'arbaz@example.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git@example.com:streaming.git'
+                    developerConnection = 'scm:git:ssh://git@example.com:streaming.git'
+                    url = 'https://example.com/streaming'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'local'
+            url = uri("${buildDir}/repo")
+        }
+    }
 }
