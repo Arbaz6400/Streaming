@@ -19,10 +19,11 @@ println pom_content
 println "===== Updated POM ====="
 println updatedPom
 
-// Extract version with regex
-def versionMatch = updatedPom =~ /<version>(.+)<\/version>/
-if (versionMatch) {
-    println "Extracted Version: ${versionMatch[0][1]}"
+// ✅ Extract version without matcher
+def extractedVersion = updatedPom.find(/<version>(.+)<\/version>/) { full, v -> v }
+
+if (extractedVersion) {
+    println "Extracted Version: $extractedVersion"
 } else {
     println "No version found!"
 }
