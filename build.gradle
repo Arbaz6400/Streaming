@@ -1,10 +1,28 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.2") {
+            exclude group: "org.jdom", module: "jdom2"
+        }
+    }
+}
+
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-group = 'com.example'
+group = 'com.enbd.daas.leap.streaming'
 version = '1.0.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
 
 publishing {
     publications {
@@ -12,4 +30,8 @@ publishing {
             from components.java
         }
     }
+}
+
+tasks.register("prepareArtifacts") {
+    dependsOn("clean", "build", "publishToMavenLocal")
 }
