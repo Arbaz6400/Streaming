@@ -24,6 +24,14 @@ application {
 tasks.register("prepareArtifacts") {
     dependsOn shadowJar
     doLast {
-        println "Artifacts prepared at: ${tasks.shadowJar.get().archiveFile.get().asFile}"
+        println "Artifacts prepared at: ${tasks.shadowJar.archiveFile.get().asFile}"
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
     }
 }
