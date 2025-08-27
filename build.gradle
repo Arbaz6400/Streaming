@@ -5,7 +5,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'com.enbd.streaming'
+group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
 version = '1.0.0'
 
 repositories {
@@ -18,36 +18,17 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.enbd.streaming.Main'
+    mainClass = 'com.enbd.streaming.Main' // Optional placeholder
 }
 
 // Shadow JAR configuration
-tasks.named('shadowJar') {
+shadowJar {
     archiveBaseName.set('streaming')
     archiveClassifier.set('')
     archiveVersion.set(version)
     mergeServiceFiles()
     zip64 true
 }
-
-// Make distribution tasks depend on shadowJar
-tasks.named('distZip') { dependsOn tasks.named('shadowJar') }
-tasks.named('distTar') { dependsOn tasks.named('shadowJar') }
-tasks.named('startScripts') { dependsOn tasks.named('shadowJar') }
-
-// Task to prepare artifacts
-ttasks.register('prepareArtifacts') {
-    dependsOn tasks.named('shadowJar')
-    dependsOn tasks.named('publishToMavenLocal')
-    doLast {
-        // Access shadowJar task lazily
-        def shadowJarTask = tasks.named('shadowJar').get()
-        println "Artifacts prepared:"
-        println "JAR: ${shadowJarTask.archiveFile.get().asFile}"
-        println "POM: build/publications/mavenJava/pom-default.xml"
-    }
-}
-
 
 // Maven publication
 publishing {
@@ -59,4 +40,28 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+// Task to prepare artifacts (Shadow JAR + POM)
+tasks.register('prepareArtifacts') {
+    dependsOn tasks.named('shadowJar')
+    dependsOn tasks.named('publishToMavenLocal')
+
+    doLast {
+        def shadowJarFile = tasks.named('shadowJar').get().archiveFile.get().asFile
+        println "Artifacts prepared:"
+        println "JAR: $shadowJarFile"
+        println "POM: build/publications/mavenJava/pom-default.xml"
+    }
+}
+
+// Fix implicit dependency warnings
+tasks.named('startScripts') {
+    dependsOn tasks.named('shadowJar')
+}
+tasks.named('distZip') {
+    dependsOn tasks.named('shadowJar')
+}
+tasks.named('distTar') {
+    dependsOn tasks.named('shadowJar')
 }
