@@ -36,15 +36,18 @@ tasks.named('distTar') { dependsOn tasks.named('shadowJar') }
 tasks.named('startScripts') { dependsOn tasks.named('shadowJar') }
 
 // Task to prepare artifacts
-tasks.register('prepareArtifacts') {
+ttasks.register('prepareArtifacts') {
     dependsOn tasks.named('shadowJar')
     dependsOn tasks.named('publishToMavenLocal')
     doLast {
+        // Access shadowJar task lazily
+        def shadowJarTask = tasks.named('shadowJar').get()
         println "Artifacts prepared:"
-        println "JAR: ${tasks.shadowJar.get().archiveFile.asFile.get()}"
+        println "JAR: ${shadowJarTask.archiveFile.get().asFile}"
         println "POM: build/publications/mavenJava/pom-default.xml"
     }
 }
+
 
 // Maven publication
 publishing {
