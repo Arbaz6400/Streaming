@@ -1,21 +1,3 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        maven {
-            url "${NEXUS_URL}"
-            credentials {
-                username = "${NEXUS_USERNAME}"
-                password = "${NEXUS_PASSWORD}"
-            }
-        }
-    }
-    dependencies {
-        classpath("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.2") {
-            exclude group: "org.jdom", module: "jdom2"
-        }
-    }
-}
-
 plugins {
     id "java"
     id "application"
@@ -23,135 +5,54 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-
-}
-
-apply plugin: "com.github.johnrengelman.shadow"
-
-ext {
-    flinkVersion = "2.0.0"
-    kafkaConnectorVersion = "4.0.0-2.0" // Compatible with Flink 2.0
-    cucumberVersion = "6.5.0"
-}
-
-group = "com.enbd.daas.leap.streaming"
+group = "com.example"
 version = "1.0.0"
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-mainClassName = "com.enbd.daas.leap.streaming.Main" // <-- adjust to your main class
-
 repositories {
-    mavenLocal()
-    maven {
-        url "${NEXUS_URL}"
-        credentials {
-            username = "${NEXUS_USERNAME}"
-            password = "${NEXUS_PASSWORD}"
-        }
-    }
     mavenCentral()
 }
 
 dependencies {
-    // Flink core streaming
-    implementation("org.apache.flink:flink-core:${flinkVersion}") {
-        exclude group: 'org.apache.flink', module: 'flink-shaded-netty'
-        exclude group: 'org.apache.flink', module: 'flink-shaded-zookeeper-3'
-    }
-
-    // Kafka Connector
-    implementation("org.apache.flink:flink-connector-kafka:${kafkaConnectorVersion}")
-
-    // Cucumber (testing)
-    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}")
-    testImplementation("io.cucumber:cucumber-junit:${cucumberVersion}")
-
-    testImplementation("junit:junit:4.13.2")
+    implementation "org.slf4j:slf4j-api:2.0.9"
+    testImplementation "junit:junit:4.13.2"
 }
 
-test {
-    finalizedBy jacocoTestReport // report is always generated after tests run
+// Shadow JAR configuration
+shadowJar {
+    archiveClassifier.set("") // ensures the jar name doesn’t end with "-all"
 }
 
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-        html.required = true
-    }
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                'com/enbd/daas/leap/streaming/apps/**',
-                'com/enbd/daas/leap/streaming/apps/config/**'
-            ])
-        }))
+// Custom task to prepare artifacts
+tasks.register("prepareArtifacts") {
+    dependsOn shadowJar
+    group = "build"
+    description = "Prepares artifacts for publishing"
+    doLast {
+        println "Artifacts prepared at: ${buildDir}/libs"
     }
 }
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.00
-            }
-        }
-    }
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                'com/enbd/daas/leap/streaming/apps/**',
-                'com/enbd/daas/leap/streaming/apps/config/**'
-            ])
-        }))
-    }
-}
-check.dependsOn jacocoTestCoverageVerification
-
+// Maven Publish configuration
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            artifact(tasks.shadowJar) {
+                classifier = null
+            }
+
+            pom {
+                name.set("Streaming App")
+                description.set("A sample streaming project")
+                url.set("https://example.com/streaming")
+            }
         }
     }
-}
-
-shadowJar {
-    mergeServiceFiles()
-    zip64 true
-    transform(com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer) {
-        resource 'reference.conf'
-    }
-}
-
-tasks.register("install") {
-    dependsOn("publishToMavenLocal")
-}
-
-tasks.register("prepareArtifacts") {
-    dependsOn("build", "shadowJar", "publishToMavenLocal")
-
-    doLast {
-        def artifactsDir = file("$buildDir/artifacts")
-        artifactsDir.mkdirs()
-
-        // Copy shadow JAR (fat jar)
-        copy {
-            from("$buildDir/libs")
-            include("*.jar")
-            into(artifactsDir)
+    repositories {
+        maven {
+            name = "localRepo"
+            url = uri("${buildDir}/repo")
         }
-
-        // Copy generated POM
-        copy {
-            from("$buildDir/publications/mavenJava")
-            include("pom-default.xml")
-            into(artifactsDir)
-            rename { "pom.xml" }
-        }
-
-        println "✅ Artifacts prepared at: $artifactsDir"
     }
 }
