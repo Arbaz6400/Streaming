@@ -3,10 +3,9 @@ plugins {
     id 'application'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'groovy'
 }
 
-group = 'com.enbd.streaming'
+group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
 version = '1.0.0'
 
 repositories {
@@ -15,12 +14,11 @@ repositories {
 
 dependencies {
     implementation 'org.apache.commons:commons-lang3:3.14.0'
-    implementation localGroovy()
     testImplementation 'junit:junit:4.13.2'
 }
 
 application {
-    mainClass = 'com.enbd.streaming.Main' // placeholder
+    mainClass = 'com.enbd.streaming.Main' // Optional placeholder
 }
 
 // Shadow JAR configuration
@@ -32,7 +30,17 @@ shadowJar {
     zip64 true
 }
 
-// Task to prepare artifacts
+// Make distribution tasks depend on shadowJar
+tasks.distZip.dependsOn shadowJar
+tasks.distTar.dependsOn shadowJar
+tasks.startScripts.dependsOn shadowJar
+
+// Optional: mark shadowJar outputs as inputs for distribution tasks
+tasks.distZip.inputs.files(shadowJar.archiveFile)
+tasks.distTar.inputs.files(shadowJar.archiveFile)
+tasks.startScripts.inputs.files(shadowJar.archiveFile)
+
+// Task to prepare artifacts (Shadow JAR + POM)
 tasks.register('prepareArtifacts') {
     dependsOn shadowJar
     dependsOn publishToMavenLocal
@@ -55,10 +63,7 @@ publishing {
     }
 }
 
-// **Run Groovy script using GroovyShell**
-task runGroovyScript {
-    doLast {
-        def shell = new GroovyShell()
-        shell.evaluate(new File("${projectDir}/NexusRestTest.groovy"))
-    }
-}
+// Optional: disable distribution tasks if you only want shadowJar for testing
+// tasks.named('distZip').configure { enabled = false }
+// tasks.named('distTar').configure { enabled = false }
+// tasks.named('startScripts').configure { enabled = false }
