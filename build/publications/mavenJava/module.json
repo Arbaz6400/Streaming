@@ -1,0 +1,89 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.enbd.streaming",
+    "module": "streaming",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "streaming-1.0.0.jar",
+          "url": "streaming-1.0.0.jar",
+          "size": 662063,
+          "sha512": "6a7cb11eed1952b96c21a2447149856efddd8e4ba42df3ae785bd3806a901cc850637d9949708e2d65b2a1766b28250ff92897a50e22243b458146e558395240",
+          "sha256": "a9adb65a15e16c62e06bb2b786b892eb846328796c5eacd17770a4fff37508cc",
+          "sha1": "e263293ce763b3736fe87cde498da95a701d1a82",
+          "md5": "7ce7a8452cd4422e35e074e0527cfe1d"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.14.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "streaming-1.0.0.jar",
+          "url": "streaming-1.0.0.jar",
+          "size": 662063,
+          "sha512": "6a7cb11eed1952b96c21a2447149856efddd8e4ba42df3ae785bd3806a901cc850637d9949708e2d65b2a1766b28250ff92897a50e22243b458146e558395240",
+          "sha256": "a9adb65a15e16c62e06bb2b786b892eb846328796c5eacd17770a4fff37508cc",
+          "sha1": "e263293ce763b3736fe87cde498da95a701d1a82",
+          "md5": "7ce7a8452cd4422e35e074e0527cfe1d"
+        }
+      ]
+    },
+    {
+      "name": "shadowRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "shadowed",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "streaming-1.0.0.jar",
+          "url": "streaming-1.0.0.jar",
+          "size": 662063,
+          "sha512": "6a7cb11eed1952b96c21a2447149856efddd8e4ba42df3ae785bd3806a901cc850637d9949708e2d65b2a1766b28250ff92897a50e22243b458146e558395240",
+          "sha256": "a9adb65a15e16c62e06bb2b786b892eb846328796c5eacd17770a4fff37508cc",
+          "sha1": "e263293ce763b3736fe87cde498da95a701d1a82",
+          "md5": "7ce7a8452cd4422e35e074e0527cfe1d"
+        }
+      ]
+    }
+  ]
+}
