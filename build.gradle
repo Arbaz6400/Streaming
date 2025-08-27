@@ -5,7 +5,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
+group = 'com.enbd.streaming'
 version = '1.0.0'
 
 repositories {
@@ -15,10 +15,11 @@ repositories {
 dependencies {
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     testImplementation 'junit:junit:4.13.2'
+    implementation localGroovy()
 }
 
 application {
-    mainClass = 'com.enbd.streaming.Main' // Optional, can be placeholder if no main class
+    mainClass = 'com.enbd.streaming.Main' // Optional placeholder
 }
 
 // Shadow JAR configuration
@@ -51,4 +52,11 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+// Run Groovy test script
+task runGroovyScript(type: JavaExec) {
+    mainClass.set('org.codehaus.groovy.tools.GroovyStarter')
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-cp', classpath.asPath, 'NexusRestTest.groovy']
 }
