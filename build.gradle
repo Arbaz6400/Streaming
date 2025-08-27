@@ -13,46 +13,17 @@ repositories {
 }
 
 dependencies {
-    implementation "org.slf4j:slf4j-api:2.0.9"
+    implementation "org.apache.commons:commons-lang3:3.14.0"
     testImplementation "junit:junit:4.13.2"
 }
 
-// Shadow JAR configuration
-shadowJar {
-    archiveClassifier.set("") // ensures the jar name doesn’t end with "-all"
+application {
+    mainClass = "com.example.Main"
 }
 
-// Custom task to prepare artifacts
 tasks.register("prepareArtifacts") {
     dependsOn shadowJar
-    group = "build"
-    description = "Prepares artifacts for publishing"
     doLast {
-        println "Artifacts prepared at: ${buildDir}/libs"
-    }
-}
-
-// Maven Publish configuration
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            artifact(tasks.shadowJar) {
-                classifier = null
-            }
-
-            pom {
-                name.set("Streaming App")
-                description.set("A sample streaming project")
-                url.set("https://example.com/streaming")
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "localRepo"
-            url = uri("${buildDir}/repo")
-        }
+        println "Artifacts prepared at: ${tasks.shadowJar.get().archiveFile.get().asFile}"
     }
 }
