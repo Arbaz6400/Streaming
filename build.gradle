@@ -5,7 +5,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
+group = 'com.enbd.streaming'
 version = '1.0.0'
 
 repositories {
@@ -18,11 +18,11 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.enbd.streaming.Main' // Optional placeholder
+    mainClass = 'com.enbd.streaming.Main'
 }
 
 // Shadow JAR configuration
-shadowJar {
+tasks.named('shadowJar') {
     archiveBaseName.set('streaming')
     archiveClassifier.set('')
     archiveVersion.set(version)
@@ -31,22 +31,17 @@ shadowJar {
 }
 
 // Make distribution tasks depend on shadowJar
-tasks.distZip.dependsOn shadowJar
-tasks.distTar.dependsOn shadowJar
-tasks.startScripts.dependsOn shadowJar
+tasks.named('distZip') { dependsOn tasks.named('shadowJar') }
+tasks.named('distTar') { dependsOn tasks.named('shadowJar') }
+tasks.named('startScripts') { dependsOn tasks.named('shadowJar') }
 
-// Optional: mark shadowJar outputs as inputs for distribution tasks
-tasks.distZip.inputs.files(shadowJar.archiveFile)
-tasks.distTar.inputs.files(shadowJar.archiveFile)
-tasks.startScripts.inputs.files(shadowJar.archiveFile)
-
-// Task to prepare artifacts (Shadow JAR + POM)
+// Task to prepare artifacts
 tasks.register('prepareArtifacts') {
-    dependsOn shadowJar
-    dependsOn publishToMavenLocal
+    dependsOn tasks.named('shadowJar')
+    dependsOn tasks.named('publishToMavenLocal')
     doLast {
         println "Artifacts prepared:"
-        println "JAR: ${tasks.shadowJar.get().archiveFile.get().asFile}"
+        println "JAR: ${tasks.shadowJar.get().archiveFile.asFile.get()}"
         println "POM: build/publications/mavenJava/pom-default.xml"
     }
 }
@@ -62,8 +57,3 @@ publishing {
         mavenLocal()
     }
 }
-
-// Optional: disable distribution tasks if you only want shadowJar for testing
-// tasks.named('distZip').configure { enabled = false }
-// tasks.named('distTar').configure { enabled = false }
-// tasks.named('startScripts').configure { enabled = false }
