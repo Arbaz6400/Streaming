@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
-version = '1.0.0'
+//version = '1.0.0'
 
 repositories {
     mavenCentral()
@@ -20,14 +20,12 @@ dependencies {
 application {
     mainClass = 'com.enbd.streaming.Main' // Optional placeholder
 }
+version = project.findProperty('appVersion') ?: '1.1.0-SNAPSHOT'
 
-// Shadow JAR configuration
 shadowJar {
-    archiveBaseName.set('streaming')
-    archiveClassifier.set('')
-    archiveVersion.set(version)
-    mergeServiceFiles()
-    zip64 true
+    archiveClassifier.set('all')
+}
+
 }
 
 // Maven publication
