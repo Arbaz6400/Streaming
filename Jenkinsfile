@@ -7,3 +7,4 @@ buildStreaming(
     gradleHome: "/home/nonroot/.gradle",
     nexusUsername: credentials('nexus-username'),
     nexusPassword: credentials('nexus-password')
+)
