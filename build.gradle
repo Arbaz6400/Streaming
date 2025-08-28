@@ -1,65 +1,16 @@
 plugins {
     id 'java'
-    id 'application'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-group = 'com.enbd.streaming'   // Must be non-empty for Maven publication
-//version = '1.0.0'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
-    testImplementation 'junit:junit:4.13.2'
-}
-
-application {
-    mainClass = 'com.enbd.streaming.Main' // Optional placeholder
-}
-version = project.findProperty('appVersion') ?: '1.1.0-SNAPSHOT'
+// Use version passed from RTS pipeline
+version = project.hasProperty('appVersion') ? project.property('appVersion') : '1.0.0-SNAPSHOT'
 
 shadowJar {
-    archiveClassifier.set('all')
+    archiveBaseName.set('streaming')    // or your module name
+    archiveVersion.set(project.version) // dynamic version
+    archiveClassifier.set('all')        // ensures -all.jar
 }
 
-}
-
-// Maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
-}
-
-// Task to prepare artifacts (Shadow JAR + POM)
-tasks.register('prepareArtifacts') {
-    dependsOn tasks.named('shadowJar')
-    dependsOn tasks.named('publishToMavenLocal')
-
-    doLast {
-        def shadowJarFile = tasks.named('shadowJar').get().archiveFile.get().asFile
-        println "Artifacts prepared:"
-        println "JAR: $shadowJarFile"
-        println "POM: build/publications/mavenJava/pom-default.xml"
-    }
-}
-
-// Fix implicit dependency warnings
-tasks.named('startScripts') {
-    dependsOn tasks.named('shadowJar')
-}
-tasks.named('distZip') {
-    dependsOn tasks.named('shadowJar')
-}
-tasks.named('distTar') {
-    dependsOn tasks.named('shadowJar')
-}
+// Optional: make shadowJar the default artifact
+build.dependsOn shadowJar
