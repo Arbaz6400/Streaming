@@ -4,7 +4,7 @@ plugins {
 }
 
 // Use version passed from RTS pipeline
-def appVversion = project.findProperty('appVersion') ?: '1.0.1'
+def appversion = project.findProperty('appVersion') ?: '1.0.1'
 version = appVersion
 
 shadowJar {
