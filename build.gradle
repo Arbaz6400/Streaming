@@ -1,15 +1,17 @@
 plugins {
     id 'java'
-    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-group = 'com.example'
-version = '1.0.0'
+// Use version passed from RTS pipeline
+def appVversion = project.findProperty('appVersion') ?: '1.0.1'
+version = appVersion
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+shadowJar {
+    archiveBaseName.set('streaming')    // or your module name
+    archiveVersion.set(project.version) // dynamic version
+    archiveClassifier.set('all')        // ensures -all.jar
 }
+
+// Optional: make shadowJar the default artifact
+build.dependsOn shadowJar
