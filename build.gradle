@@ -4,7 +4,8 @@ plugins {
 }
 
 // Use version passed from RTS pipeline
-version = project.hasProperty('appVersion') ? project.property('appVersion') : '1.0.0-SNAPSHOT'
+def appVversion = project.findProperty('appVersion') ?: '1.0.1'
+version = appVersion
 
 shadowJar {
     archiveBaseName.set('streaming')    // or your module name
