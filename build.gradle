@@ -4,8 +4,33 @@ plugins {
 }
 
 // Use version passed from RTS pipeline
-def appVersion = project.findProperty('appVersion') ?: '1.0.1'
-version = appVersion
+//def appVersion = project.findProperty('appVersion') ?: '1.0.1'
+//version = appVersion
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId    = project.findProperty("group") ?: "com.example"
+            artifactId = project.findProperty("artifactId") ?: "demo"
+            version    = project.findProperty("version") ?: "1.0.0"
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            def repoId  = project.findProperty("nexusRepoId") ?: "snapshots"
+            def baseUrl = "https://nexus.myorg.com/repository"
+            url = uri("${baseUrl}/${repoId}")
+
+            credentials {
+                username = project.findProperty("nexusUsername")
+                password = project.findProperty("nexusPassword")
+            }
+        }
+    }
+}
 
 shadowJar {
     archiveBaseName.set('streaming')    // or your module name
