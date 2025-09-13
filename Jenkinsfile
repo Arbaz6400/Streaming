@@ -1,5 +1,7 @@
-@Library('quality-lib@test2') _
+@Library('quality-lib') _
 
-// streamingPipeline('pom.xml', 'prod-repo')
-
-myPipeline()
+// just call pipeline, no need to pass repo URL anymore
+exceptionPipeline(
+    "MyPipeline",                   // pipeline name
+    env.IDENTIFIER ?: "default-id"  // identifier from env/param
+)
